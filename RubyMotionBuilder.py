@@ -76,6 +76,16 @@ class RubyMotionRun(sublime_plugin.WindowCommand):
             settings.set("show_panel_on_build", show_panel_on_build)
 
 
+class RubyMotionRunWithPanel(sublime_plugin.WindowCommand):
+    def run(self):
+        settings = sublime.load_settings("RubyMotion.sublime-settings")
+        self.options= settings.get("rubymotion_run_options", ["spec", "device"])
+        self.window.show_quick_panel(self.options, self.on_done)
+    def on_done(self, picked):
+        print self.options[picked]
+        self.window.run_command("ruby_motion_run", {"options": self.options[picked]})
+
+
 class RubyMotionDeploy(sublime_plugin.WindowCommand):
     def run(self):
         view = self.window.active_view()

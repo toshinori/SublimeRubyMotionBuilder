@@ -5,7 +5,30 @@
 
 	// The number of spaces a tab is considered equal to
 	"tab_size": 2,
-	
+
 	// Set to true to insert spaces when tab is pressed
-	"translate_tabs_to_spaces": true
+	"translate_tabs_to_spaces": true,
+
+  "rubymotion_run_options": [
+    "simulator",
+    "spec",
+    "device",
+    "debug",
+    "device debug=1",
+    "retina=true",
+    "archive",
+    "archive:distribution",
+    "build",
+    "build:device",
+    "build:simulator",
+    "clean",
+    "config",
+    "ctags",
+    "default",
+    "pixate:init",
+    "pixate:sass",
+    "spec:device",
+    "spec:simulator",
+    "static"
+  ]
 }
