@@ -82,7 +82,7 @@ class RubyMotionRunWithPanel(sublime_plugin.WindowCommand):
         self.options= settings.get("rubymotion_run_options", ["spec", "device"])
         self.window.show_quick_panel(self.options, self.on_done)
     def on_done(self, picked):
-        print self.options[picked]
+        if (picked < 0): return
         self.window.run_command("ruby_motion_run", {"options": self.options[picked]})
 
 
