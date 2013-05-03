@@ -19,6 +19,15 @@ def FindRubyMotionRakefile(dir_name):
     return None
 
 
+def UseBundler():
+    settings = sublime.load_settings("RubyMotion.sublime-settings")
+    return settings.get("rubymotion_use_bundler", False)
+
+
+def GetCommandPrefix():
+    return "bundle exec " if UseBundler() else ""
+
+
 class RubyMotionBuild(sublime_plugin.WindowCommand):
     def run(self, build_target=None):
         view = self.window.active_view()
@@ -28,6 +37,8 @@ class RubyMotionBuild(sublime_plugin.WindowCommand):
         if dir_name:
             sh_name = os.path.join(this_dir, "rubymotion_build.sh")
             cmd = "rake build"
+            if UseBundler():
+                cmd = GetCommandPrefix() + cmd
             if build_target and build_target != "all":
                 cmd += ":" + build_target
 
@@ -46,6 +57,8 @@ class RubyMotionClean(sublime_plugin.WindowCommand):
         dir_name = FindRubyMotionRakefile(os.path.split(view.file_name())[0])
         if dir_name:
             sh_name = os.path.join(this_dir, "rubymotion_build.sh")
+            if UseBundler():
+                cmd = GetCommandPrefix() + cmd
             cmd = "rake clean"
 
             settings = sublime.load_settings("RubyMotion.sublime-settings")
@@ -71,7 +84,7 @@ class RubyMotionRun(sublime_plugin.WindowCommand):
             if show_panel_on_build:
                 # temporary setting to keep console visibility
                 settings.set("show_panel_on_build", False)
-            self.window.run_command("exec", {"cmd": ["sh", sh_name, dir_name, options], "working_dir": dir_name, "file_regex": file_regex})
+            self.window.run_command("exec", {"cmd": ["sh", sh_name, dir_name, options, GetCommandPrefix()], "working_dir": dir_name, "file_regex": file_regex})
             # setting recovery
             settings.set("show_panel_on_build", show_panel_on_build)
 
@@ -95,7 +108,8 @@ class RubyMotionDeploy(sublime_plugin.WindowCommand):
         if dir_name:
             sh_name = os.path.join(this_dir, "rubymotion_build.sh")
             cmd = "rake device"
-
+            if UseBundler():
+                cmd = GetCommandPrefix() + cmd
             settings = sublime.load_settings("RubyMotion.sublime-settings")
             env_file = settings.get("rubymotion_build_env_file", "")
 
