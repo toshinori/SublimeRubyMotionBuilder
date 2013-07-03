@@ -2,6 +2,7 @@ import sublime
 import sublime_plugin
 import os.path
 import re
+import glob
 
 this_dir = os.path.split(os.path.abspath(__file__))[0]
 
@@ -125,9 +126,12 @@ class GenerateRubyMotionSyntax(sublime_plugin.WindowCommand):
 
 class GenerateRubyMotionCompletions(sublime_plugin.WindowCommand):
     def run(self):
+        self.target_dirs = glob.glob("/Library/RubyMotion/data/*/*/BridgeSupport/")
+        self.window.show_quick_panel(self.target_dirs, self.on_done)
+    def on_done(self, picked):
+        if (picked < 0): return
         rb_name = os.path.join(this_dir, "rubymotion_completion_generator.rb")
-        bridge_support_dir = "/Library/RubyMotion/data/5.1/BridgeSupport/"
-        self.window.run_command("exec", {"cmd": ["ruby", rb_name, bridge_support_dir], "working_dir": this_dir})
+        self.window.run_command("exec", {"cmd": ["ruby", rb_name, self.target_dirs[picked]], "working_dir": this_dir})
 
 
 class SetRubyMotionSyntax(sublime_plugin.EventListener):
